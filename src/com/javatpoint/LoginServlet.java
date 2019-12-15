@@ -18,14 +18,16 @@ import javax.servlet.http.HttpServletResponse;
 
 public class LoginServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//EXP00-J. Do not ignore values returned by methods
-		//Para comprobar que un método se ha realizado correctamente, estos suelen devolver valores que nos sirven para
-		//prevenir futuros errores, como por ejemplo hacer referencias a variables nulas o no inicializadas
+		
 		response.setContentType("text/html");
 		
 		PrintWriter out=response.getWriter();
 		
 		//EXP00-J. Do not ignore values returned by methods
+		//Para comprobar que un método se ha realizado correctamente, estos suelen devolver valores que nos sirven para
+		//prevenir futuros errores, como por ejemplo hacer referencias a variables nulas o no inicializadas
+		//En este caso, si no se puede crear correctamente el dispatcher el método include operaría sobre un objeto nulo
+		//o no inicializado, lo que podría suponer problemas
 		request.getRequestDispatcher("link.html").include(request, response);
 		
 		//Error IDS01-J. Normalize strings before validating them
@@ -82,7 +84,7 @@ public class LoginServlet extends HttpServlet {
 			
 			Cookie ck=new Cookie("name",name);
 			
-			//EXP00-J. Do not ignore values returned by methods
+			//addCookie no devuelve ningún valor (tipo void), por lo tanto no incumple EXP00-J.
 			response.addCookie(ck);
 			
 		}else{
@@ -92,6 +94,7 @@ public class LoginServlet extends HttpServlet {
 		}
 		//Limpiar la contraseña y su hash una vez validada
 		//Arrays.fill(password, ' ');
+		//Se sabe que 0 es un valor válido del typo byte
 		Arrays.fill(password, (byte) 0);
 		Arrays.fill(hash, (byte) 0);
 		out.close();
